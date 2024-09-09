@@ -71,12 +71,20 @@
     <Content Include="App_Data\MediChainDB_log.ldf">
       <DependentUpon>MediChainDB.mdf</DependentUpon>
     </Content>
+    <Content Include="ProductDetails.aspx" />
     <Content Include="Warehouse.aspx" />
     <Content Include="Global.asax" />
     <Content Include="SignupBuyer.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ProductDetails.aspx.cs">
+      <DependentUpon>ProductDetails.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProductDetails.aspx.designer.cs">
+      <DependentUpon>ProductDetails.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Warehouse.aspx.cs">
       <DependentUpon>Warehouse.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
