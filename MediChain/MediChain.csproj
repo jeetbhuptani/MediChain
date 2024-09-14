@@ -72,9 +72,9 @@
       <DependentUpon>MediChainDB.mdf</DependentUpon>
     </Content>
     <Content Include="ProductDetails.aspx" />
+    <Content Include="SignUp.aspx" />
     <Content Include="Warehouse.aspx" />
     <Content Include="Global.asax" />
-    <Content Include="SignupBuyer.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -84,6 +84,13 @@
     </Compile>
     <Compile Include="ProductDetails.aspx.designer.cs">
       <DependentUpon>ProductDetails.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="SignUp.aspx.cs">
+      <DependentUpon>SignUp.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SignUp.aspx.designer.cs">
+      <DependentUpon>SignUp.aspx</DependentUpon>
     </Compile>
     <Compile Include="Warehouse.aspx.cs">
       <DependentUpon>Warehouse.aspx</DependentUpon>
@@ -96,13 +103,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SignupBuyer.aspx.cs">
-      <DependentUpon>SignupBuyer.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="SignupBuyer.aspx.designer.cs">
-      <DependentUpon>SignupBuyer.aspx</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
