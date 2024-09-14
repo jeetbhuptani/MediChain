@@ -37,13 +37,13 @@
                     <div class="m-3">
                         <asp:Label ID="lblPharmacyName" AssociatedControlID="txtPharmacyName" runat="server" CssClass="form-label">Pharmacy</asp:Label>
                         <asp:TextBox ID="txtPharmacyName" runat="server" CssClass="form-control" placeholder="Name"></asp:TextBox>
-                        <asp:RequiredFieldValidator ID="rfvPharmacyName" runat="server" ControlToValidate="txtPharmacyName" ErrorMessage="Pharmacy Name is required." ForeColor="Red" Display="Dynamic" />
+                        <asp:RequiredFieldValidator ID="rfvPharmacyName" runat="server" ControlToValidate="txtPharmacyName" ErrorMessage="Name is required." ForeColor="Red" Display="Dynamic" />
                     </div>
 
                     <div class="m-3 form-floating">
                         <asp:TextBox ID="txtPharmacyAddress" runat="server" TextMode="MultiLine" CssClass="form-control"></asp:TextBox>
                         <asp:Label ID="lblPharmacyAddress" AssociatedControlID="txtPharmacyAddress" runat="server" CssClass="form-label">Pharmacy Address</asp:Label>
-                        <asp:RequiredFieldValidator ID="rfvPharmacyAddress" runat="server" ControlToValidate="txtPharmacyAddress" ErrorMessage="Pharmacy Address is required." ForeColor="Red" Display="Dynamic" />
+                        <asp:RequiredFieldValidator ID="rfvPharmacyAddress" runat="server" ControlToValidate="txtPharmacyAddress" ErrorMessage="Address is required." ForeColor="Red" Display="Dynamic" />
                     </div>
 
                     <div class="m-3">
@@ -58,6 +58,19 @@
                         <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" placeholder="example@mail.com"></asp:TextBox>
                         <asp:RequiredFieldValidator ID="rfvEmail" runat="server" ControlToValidate="txtEmail" ErrorMessage="Email is required." ForeColor="Red" Display="Dynamic" />
                         <asp:RegularExpressionValidator ID="revEmail" runat="server" ControlToValidate="txtEmail" ErrorMessage="Invalid email format." ForeColor="Red" ValidationExpression="^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$" Display="Dynamic" />
+                    </div>
+
+                    <div class="m-3">
+                        <asp:Label ID="lblPassword" AssociatedControlID="txtPassword" runat="server" CssClass="form-label">Password: </asp:Label>
+                        <asp:TextBox ID="txtPassword" runat="server" CssClass="form-control" TextMode="Password" placeholder="Enter your password"></asp:TextBox>
+                        <asp:RequiredFieldValidator ID="rfvPassword" runat="server" ControlToValidate="txtPassword" ErrorMessage="Password is required." ForeColor="Red" Display="Dynamic" />
+                    </div>
+
+                    <div class="m-3">
+                        <asp:Label ID="lblConfirmPassword" AssociatedControlID="txtConfirmPassword" runat="server" CssClass="form-label">Confirm Password: </asp:Label>
+                        <asp:TextBox ID="txtConfirmPassword" runat="server" CssClass="form-control" TextMode="Password" placeholder="Confirm your password"></asp:TextBox>
+                        <asp:RequiredFieldValidator ID="rfvConfirmPassword" runat="server" ControlToValidate="txtConfirmPassword" ErrorMessage="Confirming your password is required." ForeColor="Red" Display="Dynamic" />
+                        <asp:CompareValidator ID="cvPasswordMatch" runat="server" ControlToValidate="txtConfirmPassword" ControlToCompare="txtPassword" ErrorMessage="Passwords do not match." ForeColor="Red" Display="Dynamic" />
                     </div>
 
                     <div class="text-center mb-3">

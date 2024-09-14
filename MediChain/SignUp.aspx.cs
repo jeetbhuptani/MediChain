@@ -38,7 +38,7 @@ namespace MediChain
             if (btnBuyer.Text == "Buyer")
             {
                 btnBuyer.Text = "Dealer";
-                lblPharmacyName.Text = "Company Name";
+                lblPharmacyName.Text = "Company";
                 lblPharmacyAddress.Text = "Company Address";
             }
             else
@@ -46,7 +46,7 @@ namespace MediChain
                 if (btnBuyer.Text == "Dealer")
                 {
                     btnBuyer.Text = "Buyer";
-                    lblPharmacyName.Text = "Pharmacy Name";
+                    lblPharmacyName.Text = "Pharmacy";
                     lblPharmacyAddress.Text = "Pharmacy Address";
                 }
             }
