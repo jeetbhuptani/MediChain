@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml.Linq;
+using System.Data.SqlClient;
 
 namespace MediChain
 {
@@ -20,9 +21,9 @@ namespace MediChain
             if (Page.IsValid)
             {
                 //put connectionstrings name from web.config
-                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["YourConnectionString"].ConnectionString;
+                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
 
-                string tableName = (btnBuyer.Text == "Buyer") ? "Buyers" : "Dealer";
+                string tableName = (btnBuyer.Text == "Buyer") ? "Buyer" : "Dealer";
                 string name = txtName.Text;
                 string mobileNumber = txtMobileNumber.Text;
                 string email = txtEmail.Text;
@@ -40,11 +41,11 @@ namespace MediChain
 
                     string insertQuery = "";
 
-                    if (tableName == "Buyers")
+                    if (tableName == "Buyer")
                     {
                         pharmacyName = txtPharmacyName.Text;
                         pharmacyAddress = txtPharmacyAddress.Text;
-                        insertQuery = "INSERT INTO Buyers (buyer_name, pharmacy_name, pharmacy_address, mobile_no, email, password, joiningDate) " +
+                        insertQuery = "INSERT INTO Buyer (buyer_name, pharmacy_name, pharmacy_address, mobile_no, email, password, joiningDate) " +
                                       "VALUES (@Name ,@PharmacyName, @PharmacyAddress, @MobileNumber, @Email, @Password, @JoiningDate)";
                     }
                     else if (tableName == "Dealer")
@@ -74,7 +75,16 @@ namespace MediChain
                             cmd.Parameters.AddWithValue("@PharmacyAddress", pharmacyAddress);
                         }
 
-                        cmd.ExecuteNonQuery();
+                        int check = cmd.ExecuteNonQuery();
+                        if (check > 0)
+                        {
+                            Response.Redirect("~/Login.aspx");
+                        }
+                        else
+                        {
+                            lblMessage.Text = "An error occurred while registering.";
+                            lblMessage.ForeColor = System.Drawing.Color.Red;
+                        }
                     }
                 }
             }

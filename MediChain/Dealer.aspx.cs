@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Data.SqlClient;
 
 namespace MediChain
 {
@@ -14,9 +15,9 @@ namespace MediChain
             if (Session["Id"] != null)
             {
                 string dealerId = Session["Id"].ToString();
-                FetchBuyerDetails(dealerId);
-                lblWarehouseCount.Text = GetWarehouseCount(dealerId);
-                lblLiveOrdersCount.Text = GetLiveOrdersCount(dealerId);
+                FetchDealerDetails(dealerId);
+                lblWarehouseCount.Text = GetWarehouseCount(dealerId).ToString();
+                lblLiveOrdersCount.Text = GetLiveOrdersCount(dealerId).ToString();
             }
             else
             {
@@ -26,7 +27,7 @@ namespace MediChain
 
         private void FetchDealerDetails(string dealerId)
         {
-            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["YourConnectionString"].ConnectionString;
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
             string query = "SELECT owner_name, company_name, company_address, mobile_no, email, joiningDate FROM Dealer WHERE id = @id";
 
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -53,7 +54,7 @@ namespace MediChain
                 }
                 catch (Exception ex)
                 {
-                    lblMessage.Text = "An error occurred while fetching dealer details: " + ex.Message;
+                    ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('An error occurred while fetching dealer details ')", true);
                 }
             }
         }
@@ -62,7 +63,7 @@ namespace MediChain
         private int GetWarehouseCount(string dealerId)
         {
             int productCount = 0;
-            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["YourConnectionString"].ConnectionString;
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
 
             using (SqlConnection con = new SqlConnection(connectionString))
             {
@@ -98,7 +99,7 @@ namespace MediChain
         private int GetLiveOrdersCount(string dealerId)
         {
             int purchaseCount = 0;
-            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["YourConnectionString"].ConnectionString;
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
 
             using (SqlConnection con = new SqlConnection(connectionString))
             {

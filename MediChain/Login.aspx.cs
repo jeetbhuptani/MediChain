@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Data.SqlClient;    
 
 namespace MediChain
 {
@@ -19,9 +20,9 @@ namespace MediChain
             if (Page.IsValid)
             {
                 // Connection string from Web.config
-                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["YourConnectionString"].ConnectionString;
+                string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
 
-                string tableName = (btnBuyer.Text == "Buyer") ? "Buyers" : "Dealer";
+                string tableName = (btnBuyer.Text == "Buyer") ? "Buyer" : "Dealer";
 
                 string email = txtEmail.Text;
                 string password = txtPassword.Text;

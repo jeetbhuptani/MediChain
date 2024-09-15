@@ -47,6 +47,11 @@
                     <div class="text-center mb-3">
                         <asp:Button ID="btnLogin" runat="server" Text="Login" CssClass="btn btn-success" OnClick="btnLogin_Click" />
                         <asp:Button ID="btnReset" runat="server" Text="Reset" CssClass="btn btn-danger" OnClick="btnReset_Click" CausesValidation="False" />
+                        <asp:HyperLink ID="HyperLinkSignUp" runat="server" NavigateUrl="~/SignUp.aspx">SignUp</asp:HyperLink>
+                    </div>
+
+                    <div class="text-center m-3">
+                        <asp:Label ID="lblMessage" runat="server" CssClass="text-danger" Text=""></asp:Label>
                     </div>
                 </asp:Panel>
             </main>
