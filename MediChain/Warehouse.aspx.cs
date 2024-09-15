@@ -12,18 +12,15 @@ namespace MediChain
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             // Code to handle Add/Update product
-            txtSearch.Text = "submit";
         }
 
         protected void btnDelete_Click(object sender, EventArgs e)
         {
-            // Code to handle Delete product
-            txtSearch.Text = "delete";
+            // Code to handle Delete 
         }
         protected void btnSearch_Click(object sender, EventArgs e)
         {
-            // Code to handle Search product
-            txtSearch.Text = "search";
+            // Code to handle Search 
         }
     }
 }
