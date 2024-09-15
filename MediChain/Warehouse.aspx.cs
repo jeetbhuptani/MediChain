@@ -8,7 +8,6 @@ namespace MediChain
         {
             // Your code here
         }
-
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             // Code to handle Add/Update product
