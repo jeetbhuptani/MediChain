@@ -1,146 +1,215 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Warehouse.aspx.cs" Inherits="MediChain.WarehousePage" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Warehouse.aspx.cs"
+Inherits="MediChain.WarehousePage" %>
 
 <!doctype html>
 <html lang="en">
-<head>
-    <title>Warehouse</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="Dealer.aspx">MediChain</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="text-end">
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0 text-end">
-                            <li class="nav-item">
-                                <a class="nav-link" href="Dealer.aspx">Dashboard</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="Warehouse.aspx">Warehouse</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="LiveOrders.aspx">Live Orders</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="Logout.aspx">Logout</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </header>
-    
-    
-  
-    <main>
-        <form runat="server">
-        <div class="p-2 bg-dark">
-            <!-- Regular HTML form elements -->
-            <div class="d-flex" role="search">
-                <asp:TextBox runat="server" ID="txtSearch" class="form-control me-2" placeholder="Search Warehouse"/>
-                <asp:Button ID="btnSearch" runat="server" class="btn btn-outline-warning me-2" type="button" Text="Search" OnClick="btnSearch_Click"></asp:Button>
-                <button class="btn btn-outline-success me-1" data-bs-toggle="modal" data-bs-target="#addUpdateModal" type="button">Add</button>
-            </div>
-        </div>
-
-        <!-- Table displaying warehouse data -->
-        <div class="border border-5 m-1 p-1">
-            <table class="table table-hover table-sm">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Product</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Rate</th>
-                        <th scope="col">Custom Price</th>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
-                <tbody class="table-group-divider">
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Dolo</td>
-                        <td>12</td>
-                        <td>60</td>
-                        <td>50</td>
-                        <td><button class="btn btn-primary m-0 p-1" data-bs-toggle="modal" data-bs-target="#addUpdateModal" type="button">Update</button></td>
-                        <td><button class="btn btn-danger m-0 p-1" data-bs-toggle="modal" data-bs-target="#deleteModal" type="button">Remove</button></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-            <!-- Modal for Add/Update -->
-        
-            <div class="modal fade" id="addUpdateModal" tabindex="-1" aria-labelledby="addUpdateModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addUpdateModalLabel">Modify Product</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                                <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
-                            <asp:UpdatePanel ID="UpdatePanel1" runat="server">
-                                <ContentTemplate>
-                                    <div class="mb-3">
-                                        <asp:Label runat="server" Text="Product ID:" AssociatedControlID="txtProductID" CssClass="col-form-label" />
-                                        <asp:TextBox ID="txtProductID" runat="server" CssClass="form-control"></asp:TextBox>
-                                    </div>
-                                    <div class="mb-3">
-                                        <asp:Label runat="server" Text="Quantity:" AssociatedControlID="txtQuantity" CssClass="col-form-label" />
-                                        <asp:TextBox ID="txtQuantity" runat="server" CssClass="form-control"></asp:TextBox>
-                                    </div>
-                                    <div class="mb-3">
-                                        <asp:Label runat="server" Text="Custom Price:" AssociatedControlID="txtCustomPrice" CssClass="col-form-label" />
-                                        <asp:TextBox ID="txtCustomPrice" runat="server" CssClass="form-control"></asp:TextBox>
-                                    </div>
-                                </ContentTemplate>
-                            </asp:UpdatePanel>
-
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <asp:Button ID="btnSubmit" runat="server" CssClass="btn btn-primary" Text="Save" OnClick="btnSubmit_Click" />
-                        </div>
-                    </div>
-                   
-                </div>
-            </div>
-
-            <!-- Modal for Delete Confirmation -->
-            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="deleteModalLabel">Remove Product</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure you want to remove this product?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <asp:Button ID="btnDelete" runat="server" CssClass="btn btn-danger" Text="Remove" OnClick="btnDelete_Click" />
+    <head>
+        <title>Warehouse</title>
+        <meta charset="utf-8" />
+        <meta name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <!-- Bootstrap CSS -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet" crossorigin="anonymous" />
+    </head>
+    <body>
+        <header>
+            <nav class="navbar navbar-expand-lg bg-body-tertiary">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="Dealer.aspx">MediChain</a>
+                    <button class="navbar-toggler" type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="text-end">
+                        <div class="collapse navbar-collapse"
+                            id="navbarSupportedContent">
+                            <ul
+                                class="navbar-nav me-auto mb-2 mb-lg-0 text-end">
+                                <li class="nav-item">
+                                    <a class="nav-link"
+                                        href="Dealer.aspx">Dashboard</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active"
+                                        aria-current="page"
+                                        href="Warehouse.aspx">Warehouse</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link"
+                                        href="LiveOrders.aspx">Live Orders</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link"
+                                        href="Logout.aspx">Logout</a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-            </div>
-             </form>
+            </nav>
+        </header>
+
+        <main>
+            <form runat="server">
+                <div class="p-2 bg-dark">
+                    <!-- Regular HTML form elements -->
+                    <div class="d-flex" role="search">
+                        <asp:textbox runat="server" ID="txtSearch"
+                            class="form-control me-2"
+                            placeholder="Search Warehouse" />
+                        <asp:button ID="btnSearch" runat="server"
+                            class="btn btn-outline-warning me-2" type="button"
+                            Text="Search"
+                            OnClick="btnSearch_Click"></asp:button>
+                        <button class="btn btn-outline-success me-1"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addUpdateModal"
+                            type="button">Add</button>
+                    </div>
+                </div>
+
+                <!-- Table displaying warehouse data -->
+                <div class="border border-5 m-1 p-1">
+                    <table class="table table-hover table-sm">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Product</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Rate</th>
+                                <th scope="col">Custom Price</th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-group-divider">
+                            <asp:Repeater ID="RepeaterWarehouse" runat="server">
+                                <itemtemplate>
+                                    <tr>
+                                        <th scope="row"><%# Container.ItemIndex
+                                            + 1 %></th>
+                                        <td><%# Eval("name") %></td>
+                                        <td><%# Eval("quantity") %></td>
+                                        <td><%# Eval("price") %></td>
+                                        <td><%# Eval("custom_price") %></td>
+                                        <td>
+                                            <button
+                                                class="btn btn-primary m-0 p-1"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#addUpdateModal"
+                                                type="button">Update</button>
+                                        </td>
+                                        <td>
+                                            <button
+                                                class="btn btn-danger m-0 p-1"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal"
+                                                type="button">Remove</button>
+                                        </td>
+                                    </tr>
+                                </itemtemplate>
+                            </asp:Repeater>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Modal for Add/Update -->
+
+                <div class="modal fade" id="addUpdateModal" tabindex="-1"
+                    aria-labelledby="addUpdateModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title"
+                                    id="addUpdateModalLabel">Modify Product</h5>
+                                <button type="button" class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <asp:scriptmanager ID="ScriptManager1"
+                                    runat="server"></asp:scriptmanager>
+                                <asp:updatepanel ID="UpdatePanel1"
+                                    runat="server">
+                                    <contenttemplate>
+                                        <div class="mb-3">
+                                            <asp:label runat="server"
+                                                Text="Product ID:"
+                                                AssociatedControlID="txtProductID"
+                                                CssClass="col-form-label" />
+                                            <asp:textbox ID="txtProductID"
+                                                runat="server"
+                                                CssClass="form-control"></asp:textbox>
+                                        </div>
+                                        <div class="mb-3">
+                                            <asp:label runat="server"
+                                                Text="Quantity:"
+                                                AssociatedControlID="txtQuantity"
+                                                CssClass="col-form-label" />
+                                            <asp:textbox ID="txtQuantity"
+                                                runat="server"
+                                                CssClass="form-control"></asp:textbox>
+                                        </div>
+                                        <div class="mb-3">
+                                            <asp:label runat="server"
+                                                Text="Custom Price:"
+                                                AssociatedControlID="txtCustomPrice"
+                                                CssClass="col-form-label" />
+                                            <asp:textbox ID="txtCustomPrice"
+                                                runat="server"
+                                                CssClass="form-control"></asp:textbox>
+                                        </div>
+                                    </contenttemplate>
+                                </asp:updatepanel>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">Close</button>
+                                <asp:button ID="btnSubmit" runat="server"
+                                    CssClass="btn btn-primary" Text="Save"
+                                    OnClick="btnSubmit_Click" />
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Modal for Delete Confirmation -->
+                <div class="modal fade" id="deleteModal" tabindex="-1"
+                    aria-labelledby="deleteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title"
+                                    id="deleteModalLabel">Remove Product</h5>
+                                <button type="button" class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to remove this product?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">Close</button>
+                                <asp:button ID="btnDelete" runat="server"
+                                    CssClass="btn btn-danger" Text="Remove"
+                                    OnClick="btnDelete_Click" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </main>
 
         <!-- Bootstrap JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-</body>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            crossorigin="anonymous"></script>
+    </body>
 </html>
