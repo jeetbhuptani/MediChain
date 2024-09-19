@@ -72,8 +72,8 @@
       <DependentUpon>MediChainDB.mdf</DependentUpon>
     </Content>
     <Content Include="Dealer.aspx" />
+    <Content Include="LiveOrders.aspx" />
     <Content Include="Login.aspx" />
-    <Content Include="ProductDetails.aspx" />
     <Content Include="SignUp.aspx" />
     <Content Include="Warehouse.aspx" />
     <Content Include="Global.asax" />
@@ -87,19 +87,19 @@
     <Compile Include="Dealer.aspx.designer.cs">
       <DependentUpon>Dealer.aspx</DependentUpon>
     </Compile>
+    <Compile Include="LiveOrders.aspx.cs">
+      <DependentUpon>LiveOrders.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LiveOrders.aspx.designer.cs">
+      <DependentUpon>LiveOrders.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="ProductDetails.aspx.cs">
-      <DependentUpon>ProductDetails.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="ProductDetails.aspx.designer.cs">
-      <DependentUpon>ProductDetails.aspx</DependentUpon>
     </Compile>
     <Compile Include="SignUp.aspx.cs">
       <DependentUpon>SignUp.aspx</DependentUpon>
