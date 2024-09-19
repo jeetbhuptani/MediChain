@@ -1,4 +1,5 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="MediChain.Warehouse.aspx.cs"
+﻿<%@ Page Language="C#" AutoEventWireup="true"
+CodeBehind="MediChain.Warehouse.aspx.cs"
 Inherits="MediChain.WarehousePage" %>
 
 <!doctype html>
@@ -86,7 +87,7 @@ Inherits="MediChain.WarehousePage" %>
                             </tr>
                         </thead>
                         <tbody class="table-group-divider">
-                            <asp:Repeater ID="RepeaterWarehouse" runat="server">
+                            <asp:repeater ID="RepeaterWarehouse" runat="server">
                                 <itemtemplate>
                                     <tr>
                                         <th scope="row"><%# Container.ItemIndex
@@ -111,7 +112,7 @@ Inherits="MediChain.WarehousePage" %>
                                         </td>
                                     </tr>
                                 </itemtemplate>
-                            </asp:Repeater>
+                            </asp:repeater>
                         </tbody>
                     </table>
                 </div>
@@ -163,6 +164,9 @@ Inherits="MediChain.WarehousePage" %>
                                                 runat="server"
                                                 CssClass="form-control"></asp:textbox>
                                         </div>
+                                        <div class="container">
+                                            <asp:Label ID="lblMessage" runat="server" CssClass="text-danger"></asp:Label>
+                                        </div>
                                     </contenttemplate>
                                 </asp:updatepanel>
 
@@ -210,6 +214,15 @@ Inherits="MediChain.WarehousePage" %>
         <!-- Bootstrap JS -->
         <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-            crossorigin="anonymous"></script>
+            crossorigin="anonymous">
+            function closeModal() {
+                var myModal = new bootstrap.Modal(document.getElementById('addUpdateModal'));
+                myModal.hide();
+            }
+            function showError() {
+                var myModal = new bootstrap.Modal(document.getElementById('addUpdateModal'));
+                myModal.show();
+            }
+        </script>
     </body>
 </html>
