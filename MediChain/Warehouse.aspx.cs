@@ -1,5 +1,6 @@
 ﻿using System;
-
+using System.Data.SqlClient;
+using System.Data;
 namespace MediChain
 {
     public partial class WarehousePage : System.Web.UI.Page
