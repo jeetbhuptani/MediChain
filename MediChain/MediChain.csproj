@@ -71,6 +71,7 @@
     <Content Include="App_Data\MediChainDB_log.ldf">
       <DependentUpon>MediChainDB.mdf</DependentUpon>
     </Content>
+    <Content Include="Buyer.aspx" />
     <Content Include="Dealer.aspx" />
     <Content Include="LiveOrders.aspx" />
     <Content Include="Login.aspx" />
@@ -80,6 +81,13 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Buyer.aspx.cs">
+      <DependentUpon>Buyer.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Buyer.aspx.designer.cs">
+      <DependentUpon>Buyer.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Dealer.aspx.cs">
       <DependentUpon>Dealer.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
