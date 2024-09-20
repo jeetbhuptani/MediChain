@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="MediChain.Buyer.aspx.cs" Inherits="MediChain.Buyer" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Buyer.aspx.cs" Inherits="MediChain.Buyer" %>
 <!DOCTYPE html>
 <html lang="en">
 <head runat="server">

@@ -55,6 +55,7 @@ namespace MediChain
                 catch (Exception ex)
                 {
                     ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('An error occurred while fetching dealer details ')", true);
+                    Console.Write(ex);
                 }
             }
         }

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="MediChain.LiveOrders.aspx.cs" Inherits="MediChain.LiveOrders" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="LiveOrders.aspx.cs" Inherits="MediChain.LiveOrders" %>
 
 <!doctype html>
 <html lang="en">
