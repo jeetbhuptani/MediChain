@@ -14,27 +14,69 @@ namespace MediChain
         {
             if (!IsPostBack)
             {
-                LoadPurchaseHistory();
+                if (Session["Id"] != null)
+                {
+                    string buyerId = Session["Id"].ToString();
+                    LoadPurchaseHistory(buyerId);
+                }
+                else
+                {
+                    Response.Redirect("~/Login.aspx");
+                }
             }
         }
 
-        protected void LoadPurchaseHistory()
+        protected void LoadPurchaseHistory(string buyerId)
         {
-            // Replace with your actual database connection string
-            //string connectionString = "YourConnectionStringHere";
 
-            //using (SqlConnection con = new SqlConnection(connectionString))
-            //{
-                //SqlCommand cmd = new SqlCommand("SELECT PurchaseDescription FROM PurchaseHistory WHERE BuyerID = @BuyerID", con);
-                // Replace with actual BuyerID
-                //cmd.Parameters.AddWithValue("@BuyerID", "SomeBuyerID");
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
 
-                //con.Open();
-                //SqlDataReader reader = cmd.ExecuteReader();
-                //rptPurchaseHistory.DataSource = reader;
-                //rptPurchaseHistory.DataBind();
-                //con.Close();
-            //}
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = @"
+                        SELECT 
+                            p.product_id,
+                            p.amount,
+                            p.quantity,
+                            p.date,
+                            pr.name AS ProductName
+                        FROM PurchaseOrder p
+                        INNER JOIN Product pr ON p.product_id = pr.product_id
+                        WHERE p.buyer_id = @BuyerID
+                        ORDER BY p.date DESC";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@BuyerID", buyerId);
+                    conn.Open();
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        DataTable dt = new DataTable();
+                        dt.Load(reader);
+
+                        dt.Columns.Add("PurchaseDescription", typeof(string));
+
+                        // case of no purchase history
+                        if (dt.Rows.Count == 0) {
+                            return;
+                        }
+
+                        foreach (DataRow row in dt.Rows)
+                        {
+                            string description = $"Product: {row["ProductName"]}, " +
+                                                 $"Quantity: {row["quantity"]}, " +
+                                                 $"Amount: {row["amount"]}, " +
+                                                 $"Date: {Convert.ToDateTime(row["date"]).ToString("yyyy-MM-dd")}";
+                            row["PurchaseDescription"] = description;
+                        }
+
+                        // Bind the DataTable to the Repeater
+                        rptPurchaseHistory.DataSource = dt;
+                        rptPurchaseHistory.DataBind();
+                    }
+                }
+            }
         }
 
         protected void btnSearch_Click(object sender, EventArgs e)
