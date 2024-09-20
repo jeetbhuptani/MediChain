@@ -28,7 +28,7 @@ namespace MediChain
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 string query = @"
-            SELECT p.name, mw.quantity, p.price, mw.custom_price
+            SELECT p.product_id,p.name, mw.quantity, p.price, mw.custom_price
             FROM MedicineWarehouse mw
             INNER JOIN Product p ON mw.product_id = p.product_id
             INNER JOIN Warehouse w ON mw.warehouse_id = w.warehouse_id
@@ -153,8 +153,80 @@ namespace MediChain
 
         protected void btnDelete_Click(object sender, EventArgs e)
         {
-            // Code to handle Delete 
+            if (Session["Id"] == null)
+            {
+                Response.Redirect("LoginPage.aspx");
+                return;
+            }
+
+            string dealerId = Session["Id"].ToString();
+
+            string queryWarehouse = "SELECT warehouse_id FROM warehouse WHERE dealer_id = @dealerId";
+            int warehouseId;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand(queryWarehouse, conn);
+                cmd.Parameters.AddWithValue("@dealerId", dealerId);
+                conn.Open();
+
+                object result = cmd.ExecuteScalar();
+                if (result != null)
+                {
+                    warehouseId = result.ToString();
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            string productName = hiddenProductId.Value;
+
+            string queryProduct = "SELECT product_id FROM Product WHERE name = @productName";
+            int productId;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand(queryProduct, conn);
+                cmd.Parameters.AddWithValue("@productName", productName);
+                conn.Open();
+
+                object result = cmd.ExecuteScalar();
+                if (result != null)
+                {
+                    productId = result.ToString();
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+
+            string queryDelete = "DELETE FROM medicinewarehouse WHERE warehouse_id = @warehouseId AND product_id = @productId";
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand(queryDelete, conn);
+                cmd.Parameters.AddWithValue("@warehouseId", warehouseId);
+                cmd.Parameters.AddWithValue("@productId", productId);
+                conn.Open();
+
+                int rowsAffected = cmd.ExecuteNonQuery();
+                if (rowsAffected > 0)
+                {
+                    ScriptManager.RegisterStartupScript(this, GetType(), "CloseModal", "closeModal();", true);
+
+                    BindWarehouseData(dealerId);
+                }
+                else
+                {
+                    return;
+                }
+            }
         }
+
         protected void btnSearch_Click(object sender, EventArgs e)
         {
             // Code to handle Search 

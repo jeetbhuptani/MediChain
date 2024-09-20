@@ -108,7 +108,9 @@ Inherits="MediChain.WarehousePage" %>
                                                 class="btn btn-danger m-0 p-1"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#deleteModal"
-                                                type="button">Remove</button>
+                                                data-product-name='<%# Eval("product_name") %>'
+                                                type="button"
+                                                onclick="setDeleteModal(this)">Remove</button>
                                         </td>
                                     </tr>
                                 </itemtemplate>
@@ -165,7 +167,9 @@ Inherits="MediChain.WarehousePage" %>
                                                 CssClass="form-control"></asp:textbox>
                                         </div>
                                         <div class="container">
-                                            <asp:Label ID="lblMessage" runat="server" CssClass="text-danger"></asp:Label>
+                                            <asp:label ID="lblMessage"
+                                                runat="server"
+                                                CssClass="text-danger"></asp:label>
                                         </div>
                                     </contenttemplate>
                                 </asp:updatepanel>
@@ -197,6 +201,8 @@ Inherits="MediChain.WarehousePage" %>
                             </div>
                             <div class="modal-body">
                                 Are you sure you want to remove this product?
+                                <asp:hiddenfield ID="hiddenProductId"
+                                    runat="server" />
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary"
@@ -222,6 +228,13 @@ Inherits="MediChain.WarehousePage" %>
             function showError() {
                 var myModal = new bootstrap.Modal(document.getElementById('addUpdateModal'));
                 myModal.show();
+            }
+            function setDeleteModal(button) {
+                var productName = button.getAttribute('data-product-name');
+                document.getElementById('<%= hiddenProductId.ClientID %>').value = productName;
+                document.getElementById('deleteModalLabel').textContent = 'Remove ' + productName;
+                var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+                deleteModal.show();
             }
         </script>
     </body>
