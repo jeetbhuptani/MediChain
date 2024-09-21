@@ -61,16 +61,16 @@
                                 <ItemTemplate>
                                     <tr>
                                         <th scope="row"><%# Container.ItemIndex + 1 %></th>
-                                        <td><%# Eval("PharmacyName") %></td>
-                                        <td><%# Eval("BuyerID") %></td>
-                                        <td><%# Eval("ProductName") %></td>
-                                        <td><%# Eval("Quantity") %></td>
-                                        <td><%# Eval("TotalCost") %></td>
+                                        <td><%# Eval("pharmacy_name") %></td>
+                                        <td><%# Eval("buyer_id") %></td>
+                                        <td><%# Eval("product_name") %></td>
+                                        <td><%# Eval("quantity") %></td>
+                                        <td><%# Eval("amount") %></td>
                                         <td>
-                                            <asp:Button ID="btnUnfit" runat="server" CssClass="btn btn-danger m-0 p-1" Text="Unfit" OnClick="btnUnfit_Click" CommandArgument='<%# Eval("OrderID") %>' />
+                                            <asp:Button ID="btnUnfit" runat="server" CssClass="btn btn-danger m-0 p-1" Text="Unfit" OnClick="btnUnfit_Click" CommandArgument='<%# Eval("purchase_id") %>' />
                                         </td>
                                         <td>
-                                            <asp:Button ID="btnDone" runat="server" CssClass="btn btn-success m-0 p-1" Text="Done" OnClick="btnDone_Click" CommandArgument='<%# Eval("OrderID") %>' />
+                                            <asp:Button ID="btnDone" runat="server" CssClass="btn btn-success m-0 p-1" Text="Done" OnClick="btnDone_Click" CommandArgument='<%# Eval("purchase_id") %>' />
                                         </td>
                                     </tr>
                                 </ItemTemplate>

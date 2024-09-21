@@ -15,32 +15,96 @@ namespace MediChain
         {
             if (!IsPostBack)
             {
-                BindLiveOrders();
+                if (Session["Id"] != null)
+                {
+                    string dealerId = Session["Id"].ToString();
+                    BindLiveOrders(dealerId);
+                }
+                else
+                {
+                    Response.Redirect("~/Login.aspx");
+                }
             }
         }
 
-        private void BindLiveOrders()
+        private void BindLiveOrders(string dealerId)
         {
-            // Replace with your data source
-            //string query = "SELECT OrderID, PharmacyName, BuyerID, ProductName, Quantity, TotalCost FROM Orders";
-           //DataTable dt = GetData(query); // Assume GetData is a method that fetches data from the database.
-            //RepeaterLiveOrders.DataSource = dt;
-            //RepeaterLiveOrders.DataBind();
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+            string query = @"
+                SELECT 
+                    po.purchase_id, 
+                    po.buyer_id, 
+                    b.pharmacy_name, 
+                    p.name AS product_name, 
+                    po.quantity, 
+                    po.amount 
+                FROM 
+                    PurchaseOrder po
+                JOIN 
+                    Buyer b ON po.buyer_id = b.buyer_id
+                JOIN 
+                    Product p ON po.product_id = p.product_id
+                WHERE 
+                    po.dealer_id = @dealerId 
+                    AND po.status = 'pending';";  // Fetch only pending orders
+            
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@dealerId", dealerId);
+                    using (SqlDataAdapter sda = new SqlDataAdapter(cmd))
+                    {
+                        DataTable dt = new DataTable();
+                        sda.Fill(dt);
+                        
+
+                        RepeaterLiveOrders.DataSource = dt;
+                        RepeaterLiveOrders.DataBind();
+                    }
+                }
+            }
         }
+
+        private void UpdateOrderStatus(string purchaseId, string query)
+        {
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@purchaseId", purchaseId);
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
 
         protected void btnUnfit_Click(object sender, EventArgs e)
         {
-            // Get the OrderID from CommandArgument and mark as Unfit in the database.
-            string orderId = (sender as Button).CommandArgument;
-            // Perform database operation here.
+            string purchaseId = (sender as Button).CommandArgument;
+            
+            string query = "UPDATE PurchaseOrder SET status = 'unfit' WHERE purchase_id = @purchaseId";
+
+            UpdateOrderStatus(purchaseId, query);
+
+            BindLiveOrders(Session["Id"].ToString());
         }
+
 
         protected void btnDone_Click(object sender, EventArgs e)
         {
-            // Get the OrderID from CommandArgument and mark as Done in the database.
-            string orderId = (sender as Button).CommandArgument;
-            // Perform database operation here.
+            string purchaseId = (sender as Button).CommandArgument;
+            
+            string query = "UPDATE PurchaseOrder SET status = 'done' WHERE purchase_id = @purchaseId";
+
+            UpdateOrderStatus(purchaseId, query);
+
+            BindLiveOrders(Session["Id"].ToString());
         }
+
 
     }
 }
