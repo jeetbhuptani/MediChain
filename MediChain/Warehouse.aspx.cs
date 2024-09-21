@@ -65,7 +65,7 @@ namespace MediChain
                 lblMessage.Text = string.Empty;
 
                 string productIdStr = txtProductID.Text.Trim();
-                int productId; 
+                int productId;
                 int quantity;
                 decimal customPrice;
 
@@ -206,77 +206,87 @@ namespace MediChain
         {
             if (Session["Id"] == null)
             {
+                Console.WriteLine("Session ID is null, redirecting to LoginPage.");
                 Response.Redirect("LoginPage.aspx");
                 return;
             }
 
             string dealerId = Session["Id"].ToString();
-
-            string queryWarehouse = "SELECT warehouse_id FROM warehouse WHERE dealer_id = @dealerId";
-            int warehouseId;
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                SqlCommand cmd = new SqlCommand(queryWarehouse, conn);
-                cmd.Parameters.AddWithValue("@dealerId", dealerId);
-                conn.Open();
-
-                object result = cmd.ExecuteScalar();
-                if (result != null)
-                {
-                    warehouseId = Int32.Parse(result.ToString());
-                }
-                else
-                {
-                    return;
-                }
-            }
-
             string productName = hiddenProductId.Value;
+            Console.WriteLine("Product Name: " + productName);
 
-            string queryProduct = "SELECT product_id FROM Product WHERE name = @productName";
-            int productId;
-
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            if (string.IsNullOrEmpty(productName))
             {
-                SqlCommand cmd = new SqlCommand(queryProduct, conn);
-                cmd.Parameters.AddWithValue("@productName", productName);
-                conn.Open();
-
-                object result = cmd.ExecuteScalar();
-                if (result != null)
-                {
-                    productId = Int32.Parse(result.ToString());
-                }
-                else
-                {
-                    return;
-                }
+                Console.WriteLine("No product selected for deletion.");
+                return;
             }
 
-
-            string queryDelete = "DELETE FROM medicinewarehouse WHERE warehouse_id = @warehouseId AND product_id = @productId";
-
+            int warehouseId;
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                SqlCommand cmd = new SqlCommand(queryDelete, conn);
-                cmd.Parameters.AddWithValue("@warehouseId", warehouseId);
-                cmd.Parameters.AddWithValue("@productId", productId);
                 conn.Open();
+                Console.WriteLine("Connection opened.");
 
-                int rowsAffected = cmd.ExecuteNonQuery();
-                if (rowsAffected > 0)
+                // Step 1: Get warehouse_id
+                string queryWarehouse = "SELECT warehouse_id FROM Warehouse WHERE dealer_id = @dealerId";
+                using (SqlCommand cmd = new SqlCommand(queryWarehouse, conn))
                 {
-                    ScriptManager.RegisterStartupScript(this, GetType(), "CloseModal", "closeModal();", true);
-
-                    BindWarehouseData(dealerId);
+                    cmd.Parameters.AddWithValue("@dealerId", dealerId);
+                    object result = cmd.ExecuteScalar();
+                    if (result != null)
+                    {
+                        warehouseId = Convert.ToInt32(result);
+                        Console.WriteLine("Warehouse ID: " + warehouseId);
+                    }
+                    else
+                    {
+                        Console.WriteLine("No warehouse found for dealer: " + dealerId);
+                        return;
+                    }
                 }
-                else
+
+                // Step 2: Get product_id from Product table using productName
+                int productId;
+                string queryProduct = "SELECT product_id FROM Product WHERE name = @productName";
+                using (SqlCommand cmd = new SqlCommand(queryProduct, conn))
                 {
-                    return;
+                    cmd.Parameters.AddWithValue("@productName", productName);
+                    object result = cmd.ExecuteScalar();
+                    if (result != null)
+                    {
+                        productId = Convert.ToInt32(result);
+                        Console.WriteLine("Product ID: " + productId);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Product not found: " + productName);
+                        return;
+                    }
+                }
+
+                string queryDelete = "DELETE FROM MedicineWarehouse WHERE warehouse_id = @warehouseId AND product_id = @productId";
+                using (SqlCommand cmd = new SqlCommand(queryDelete, conn))
+                {
+                    cmd.Parameters.AddWithValue("@warehouseId", warehouseId);
+                    cmd.Parameters.AddWithValue("@productId", productId);
+
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    if (rowsAffected > 0)
+                    {
+                        Console.WriteLine("Product removed successfully. Rows affected: " + rowsAffected);
+                        BindWarehouseData(dealerId);
+                        ScriptManager.RegisterStartupScript(this, GetType(), "CloseModal", "closeModal();", true);
+                    }
+                    else
+                    {
+                        Console.WriteLine("No product found to remove. Rows affected: " + rowsAffected);
+                    }
                 }
             }
         }
+
+
 
         protected void btnSearch_Click(object sender, EventArgs e)
         {

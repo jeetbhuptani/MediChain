@@ -107,7 +107,7 @@ Inherits="MediChain.WarehousePage" %>
                                                 class="btn btn-danger m-0 p-1"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#deleteModal"
-                                                data-product-name='<%# Eval("product_name") %>'
+                                                data-product-name='<%# Eval("name") %>'
                                                 type="button"
                                                 onclick="setDeleteModal(this)">Remove</button>
                                         </td>
