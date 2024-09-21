@@ -25,7 +25,7 @@ namespace MediChain
 
         private void BindWarehouseData(string dealerId)
         {
-            
+
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 string query = @"
@@ -64,38 +64,43 @@ namespace MediChain
                 string dealerId = Session["Id"].ToString();
                 lblMessage.Text = string.Empty;
 
-                string productId = txtProductID.Text.Trim();
+                string productIdStr = txtProductID.Text.Trim();
+                int productId; 
                 int quantity;
                 decimal customPrice;
 
-                if (string.IsNullOrEmpty(productId))
+                if (string.IsNullOrEmpty(productIdStr))
                 {
+                    Console.WriteLine("Product ID cannot be empty.")
                     lblMessage.Text = "Product ID cannot be empty.";
                     return;
                 }
 
+                // Check if quantity and custom price are valid
                 if (!int.TryParse(txtQuantity.Text.Trim(), out quantity) || quantity <= 0)
                 {
+                    Console.WriteLine("Quantity must be a positive integer.");
                     lblMessage.Text = "Quantity must be a positive integer.";
                     return;
                 }
 
                 if (!decimal.TryParse(txtCustomPrice.Text.Trim(), out customPrice) || customPrice <= 0)
                 {
+                    Console.WriteLine("Custom price must be a positive decimal.");
                     lblMessage.Text = "Custom price must be a positive decimal.";
                     return;
                 }
-
                 string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
 
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
+                    Console.WriteLine("Connection opened.");
 
-                    // Step 1: Find warehouse_id from dealer_id
+                    // Step 1: Find warehouse_id based on dealer_id
                     string warehouseQuery = "SELECT warehouse_id FROM Warehouse WHERE dealer_id = @DealerId";
-
                     int warehouseId;
+
                     using (SqlCommand warehouseCmd = new SqlCommand(warehouseQuery, conn))
                     {
                         warehouseCmd.Parameters.AddWithValue("@DealerId", dealerId);
@@ -103,50 +108,95 @@ namespace MediChain
 
                         if (result == null)
                         {
+                            Console.WriteLine("No warehouse found for the given dealer.");
                             lblMessage.Text = "No warehouse found for the given dealer.";
                             return;
                         }
 
                         warehouseId = Convert.ToInt32(result);
+                        Console.WriteLine($"Found warehouse_id: {warehouseId}");
                     }
 
-                    // Step 2: Update or insert the product in the MedicineWarehouse table
-                    string mergeQuery = @"
-                MERGE INTO MedicineWarehouse AS target
-                USING (VALUES (@WarehouseId, @ProductID, @Quantity, @CustomPrice)) AS source (warehouse_id, product_id, quantity, custom_price)
-                ON target.warehouse_id = source.warehouse_id AND target.product_id = source.product_id
-                WHEN MATCHED THEN
-                    UPDATE SET quantity = source.quantity, custom_price = source.custom_price
-                WHEN NOT MATCHED THEN
-                    INSERT (warehouse_id, product_id, quantity, custom_price)
-                    VALUES (source.warehouse_id, source.product_id, source.quantity, source.custom_price);";
-
-                    using (SqlCommand mergeCmd = new SqlCommand(mergeQuery, conn))
+                    // Step 2: Check if the product exists in Product table
+                    if (!int.TryParse(productIdStr, out productId))
                     {
-                        mergeCmd.Parameters.AddWithValue("@WarehouseId", warehouseId);
-                        mergeCmd.Parameters.AddWithValue("@ProductID", productId);
-                        mergeCmd.Parameters.AddWithValue("@Quantity", quantity);
-                        mergeCmd.Parameters.AddWithValue("@CustomPrice", customPrice);
+                        Console.WriteLine("Invalid Product ID.");
+                        lblMessage.Text = "Invalid Product ID.";
+                        return;
+                    }
 
-                        int rowsAffected = mergeCmd.ExecuteNonQuery();
+                    string productCheckQuery = "SELECT COUNT(*) FROM Product WHERE product_id = @ProductId";
+                    int productExists;
 
-                        if (rowsAffected > 0)
+                    using (SqlCommand productCheckCmd = new SqlCommand(productCheckQuery, conn))
+                    {
+                        productCheckCmd.Parameters.AddWithValue("@ProductId", productId);
+                        productExists = (int)productCheckCmd.ExecuteScalar();
+                        Console.WriteLine($"Product exists: {productExists > 0}");
+                    }
+
+                    if (productExists == 0) // If product does not exist
+                    {
+                        Console.WriteLine("Product does not exist in the Product table.");
+                        lblMessage.Text = "Product does not exist in the Product table.";
+                        return;
+                    }
+
+                    // Step 3: Check if the product exists in MedicineWarehouse
+                    string productCountQuery = "SELECT COUNT(*) FROM MedicineWarehouse WHERE warehouse_id = @WarehouseId AND product_id = @ProductId";
+                    int productCount;
+
+                    using (SqlCommand productCountCmd = new SqlCommand(productCountQuery, conn))
+                    {
+                        productCountCmd.Parameters.AddWithValue("@WarehouseId", warehouseId);
+                        productCountCmd.Parameters.AddWithValue("@ProductId", productId);
+                        productCount = (int)productCountCmd.ExecuteScalar();
+                    }
+
+                    // Step 4: Update or insert the product
+                    if (productCount > 0) // If product exists, perform update
+                    {
+                        string updateQuery = "UPDATE MedicineWarehouse SET quantity = @Quantity, custom_price = @CustomPrice WHERE warehouse_id = @WarehouseId AND product_id = @ProductId";
+
+                        using (SqlCommand updateCmd = new SqlCommand(updateQuery, conn))
                         {
-                            ScriptManager.RegisterStartupScript(this, GetType(), "CloseModal", "closeModal();", true);
+                            updateCmd.Parameters.AddWithValue("@WarehouseId", warehouseId);
+                            updateCmd.Parameters.AddWithValue("@ProductId", productId);
+                            updateCmd.Parameters.AddWithValue("@Quantity", quantity);
+                            updateCmd.Parameters.AddWithValue("@CustomPrice", customPrice);
 
-                            BindWarehouseData(dealerId);
-                        }
-                        else
-                        {
-                            lblMessage.Text = "No changes were made to the database.";
+                            int rowsAffected = updateCmd.ExecuteNonQuery();
+                            lblMessage.Text = rowsAffected > 0 ? "Product updated successfully." : "No changes were made to the product.";
+                            Console.WriteLine($"Rows affected in update: {rowsAffected}");
                         }
                     }
+                    else // If product does not exist, perform insert
+                    {
+                        string insertQuery = "INSERT INTO MedicineWarehouse (warehouse_id, product_id, quantity, custom_price) VALUES (@WarehouseId, @ProductId, @Quantity, @CustomPrice)";
+
+                        using (SqlCommand insertCmd = new SqlCommand(insertQuery, conn))
+                        {
+                            insertCmd.Parameters.AddWithValue("@WarehouseId", warehouseId);
+                            insertCmd.Parameters.AddWithValue("@ProductId", productId);
+                            insertCmd.Parameters.AddWithValue("@Quantity", quantity);
+                            insertCmd.Parameters.AddWithValue("@CustomPrice", customPrice);
+
+                            int rowsAffected = insertCmd.ExecuteNonQuery();
+                            lblMessage.Text = rowsAffected > 0 ? "Product added successfully." : "Failed to add product.";
+                            Console.WriteLine($"Rows affected in insert: {rowsAffected}");
+                        }
+                    }
+
+                    // Refresh the data
+                    BindWarehouseData(dealerId);
+                    Console.WriteLine("Warehouse data refreshed.");
                 }
             }
             catch (Exception ex)
             {
                 lblMessage.Text = "An error occurred: " + ex.Message;
                 ScriptManager.RegisterStartupScript(this, GetType(), "ShowError", "showError();", true);
+                Console.WriteLine($"Exception: {ex.Message}");
             }
         }
 
