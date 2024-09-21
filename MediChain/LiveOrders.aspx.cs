@@ -33,7 +33,7 @@ namespace MediChain
             string query = @"
                 SELECT 
                     po.purchase_id, 
-                    po.buyer_id, 
+                    b.email, 
                     b.pharmacy_name, 
                     p.name AS product_name, 
                     po.quantity, 
@@ -41,7 +41,7 @@ namespace MediChain
                 FROM 
                     PurchaseOrder po
                 JOIN 
-                    Buyer b ON po.buyer_id = b.buyer_id
+                    Buyer b ON po.buyer_id = b.id
                 JOIN 
                     Product p ON po.product_id = p.product_id
                 WHERE 

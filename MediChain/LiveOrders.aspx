@@ -62,7 +62,7 @@
                                     <tr>
                                         <th scope="row"><%# Container.ItemIndex + 1 %></th>
                                         <td><%# Eval("pharmacy_name") %></td>
-                                        <td><%# Eval("buyer_id") %></td>
+                                        <td><%# Eval("email") %></td>
                                         <td><%# Eval("product_name") %></td>
                                         <td><%# Eval("quantity") %></td>
                                         <td><%# Eval("amount") %></td>
