@@ -1,5 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true"
-CodeBehind="MediChain.Warehouse.aspx.cs"
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Warehouse.aspx.cs" 
 Inherits="MediChain.WarehousePage" %>
 
 <!doctype html>

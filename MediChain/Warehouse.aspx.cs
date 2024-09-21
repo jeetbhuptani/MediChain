@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Data;
+using System.Web.UI;
 namespace MediChain
 {
     public partial class WarehousePage : System.Web.UI.Page
     {
+        string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -23,8 +25,7 @@ namespace MediChain
 
         private void BindWarehouseData(string dealerId)
         {
-            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
-
+            
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 string query = @"
@@ -173,7 +174,7 @@ namespace MediChain
                 object result = cmd.ExecuteScalar();
                 if (result != null)
                 {
-                    warehouseId = result.ToString();
+                    warehouseId = Int32.Parse(result.ToString());
                 }
                 else
                 {
@@ -195,7 +196,7 @@ namespace MediChain
                 object result = cmd.ExecuteScalar();
                 if (result != null)
                 {
-                    productId = result.ToString();
+                    productId = Int32.Parse(result.ToString());
                 }
                 else
                 {
