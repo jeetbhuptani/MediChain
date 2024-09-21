@@ -71,7 +71,7 @@ namespace MediChain
 
                 if (string.IsNullOrEmpty(productIdStr))
                 {
-                    Console.WriteLine("Product ID cannot be empty.")
+                    System.Diagnostics.Debug.WriteLine("Product ID cannot be empty.");
                     lblMessage.Text = "Product ID cannot be empty.";
                     return;
                 }
@@ -79,14 +79,14 @@ namespace MediChain
                 // Check if quantity and custom price are valid
                 if (!int.TryParse(txtQuantity.Text.Trim(), out quantity) || quantity <= 0)
                 {
-                    Console.WriteLine("Quantity must be a positive integer.");
+                    System.Diagnostics.Debug.WriteLine("Quantity must be a positive integer.");
                     lblMessage.Text = "Quantity must be a positive integer.";
                     return;
                 }
 
                 if (!decimal.TryParse(txtCustomPrice.Text.Trim(), out customPrice) || customPrice <= 0)
                 {
-                    Console.WriteLine("Custom price must be a positive decimal.");
+                    System.Diagnostics.Debug.WriteLine("Custom price must be a positive decimal.");
                     lblMessage.Text = "Custom price must be a positive decimal.";
                     return;
                 }
@@ -95,7 +95,7 @@ namespace MediChain
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
-                    Console.WriteLine("Connection opened.");
+                    System.Diagnostics.Debug.WriteLine("Connection opened.");
 
                     // Step 1: Find warehouse_id based on dealer_id
                     string warehouseQuery = "SELECT warehouse_id FROM Warehouse WHERE dealer_id = @DealerId";
@@ -108,19 +108,19 @@ namespace MediChain
 
                         if (result == null)
                         {
-                            Console.WriteLine("No warehouse found for the given dealer.");
+                            System.Diagnostics.Debug.WriteLine("No warehouse found for the given dealer.");
                             lblMessage.Text = "No warehouse found for the given dealer.";
                             return;
                         }
 
                         warehouseId = Convert.ToInt32(result);
-                        Console.WriteLine($"Found warehouse_id: {warehouseId}");
+                        System.Diagnostics.Debug.WriteLine($"Found warehouse_id: {warehouseId}");
                     }
 
                     // Step 2: Check if the product exists in Product table
                     if (!int.TryParse(productIdStr, out productId))
                     {
-                        Console.WriteLine("Invalid Product ID.");
+                        System.Diagnostics.Debug.WriteLine("Invalid Product ID.");
                         lblMessage.Text = "Invalid Product ID.";
                         return;
                     }
@@ -132,12 +132,12 @@ namespace MediChain
                     {
                         productCheckCmd.Parameters.AddWithValue("@ProductId", productId);
                         productExists = (int)productCheckCmd.ExecuteScalar();
-                        Console.WriteLine($"Product exists: {productExists > 0}");
+                        System.Diagnostics.Debug.WriteLine($"Product exists: {productExists > 0}");
                     }
 
                     if (productExists == 0) // If product does not exist
                     {
-                        Console.WriteLine("Product does not exist in the Product table.");
+                        System.Diagnostics.Debug.WriteLine("Product does not exist in the Product table.");
                         lblMessage.Text = "Product does not exist in the Product table.";
                         return;
                     }
@@ -167,8 +167,12 @@ namespace MediChain
 
                             int rowsAffected = updateCmd.ExecuteNonQuery();
                             lblMessage.Text = rowsAffected > 0 ? "Product updated successfully." : "No changes were made to the product.";
-                            Console.WriteLine($"Rows affected in update: {rowsAffected}");
+                            System.Diagnostics.Debug.WriteLine($"Rows affected in update: {rowsAffected}");
                         }
+                        txtProductID.Text = string.Empty;
+                        txtQuantity.Text = string.Empty;
+                        txtCustomPrice.Text = string.Empty;
+                        lblMessage.Text = string.Empty;
                     }
                     else // If product does not exist, perform insert
                     {
@@ -183,20 +187,24 @@ namespace MediChain
 
                             int rowsAffected = insertCmd.ExecuteNonQuery();
                             lblMessage.Text = rowsAffected > 0 ? "Product added successfully." : "Failed to add product.";
-                            Console.WriteLine($"Rows affected in insert: {rowsAffected}");
+                            System.Diagnostics.Debug.WriteLine($"Rows affected in insert: {rowsAffected}");
                         }
+                        txtProductID.Text = string.Empty;
+                        txtQuantity.Text = string.Empty;
+                        txtCustomPrice.Text = string.Empty;
+                        lblMessage.Text = string.Empty;
                     }
 
                     // Refresh the data
                     BindWarehouseData(dealerId);
-                    Console.WriteLine("Warehouse data refreshed.");
+                    System.Diagnostics.Debug.WriteLine("Warehouse data refreshed.");
                 }
             }
             catch (Exception ex)
             {
                 lblMessage.Text = "An error occurred: " + ex.Message;
                 ScriptManager.RegisterStartupScript(this, GetType(), "ShowError", "showError();", true);
-                Console.WriteLine($"Exception: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Exception: {ex.Message}");
             }
         }
 
@@ -206,18 +214,18 @@ namespace MediChain
         {
             if (Session["Id"] == null)
             {
-                Console.WriteLine("Session ID is null, redirecting to LoginPage.");
+                System.Diagnostics.Debug.WriteLine("Session ID is null, redirecting to LoginPage.");
                 Response.Redirect("LoginPage.aspx");
                 return;
             }
 
             string dealerId = Session["Id"].ToString();
             string productName = hiddenProductId.Value;
-            Console.WriteLine("Product Name: " + productName);
+            System.Diagnostics.Debug.WriteLine("Product Name: " + productName);
 
             if (string.IsNullOrEmpty(productName))
             {
-                Console.WriteLine("No product selected for deletion.");
+                System.Diagnostics.Debug.WriteLine("No product selected for deletion.");
                 return;
             }
 
@@ -226,7 +234,7 @@ namespace MediChain
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
-                Console.WriteLine("Connection opened.");
+                System.Diagnostics.Debug.WriteLine("Connection opened.");
 
                 // Step 1: Get warehouse_id
                 string queryWarehouse = "SELECT warehouse_id FROM Warehouse WHERE dealer_id = @dealerId";
@@ -237,11 +245,11 @@ namespace MediChain
                     if (result != null)
                     {
                         warehouseId = Convert.ToInt32(result);
-                        Console.WriteLine("Warehouse ID: " + warehouseId);
+                        System.Diagnostics.Debug.WriteLine("Warehouse ID: " + warehouseId);
                     }
                     else
                     {
-                        Console.WriteLine("No warehouse found for dealer: " + dealerId);
+                        System.Diagnostics.Debug.WriteLine("No warehouse found for dealer: " + dealerId);
                         return;
                     }
                 }
@@ -256,11 +264,11 @@ namespace MediChain
                     if (result != null)
                     {
                         productId = Convert.ToInt32(result);
-                        Console.WriteLine("Product ID: " + productId);
+                        System.Diagnostics.Debug.WriteLine("Product ID: " + productId);
                     }
                     else
                     {
-                        Console.WriteLine("Product not found: " + productName);
+                        System.Diagnostics.Debug.WriteLine("Product not found: " + productName);
                         return;
                     }
                 }
@@ -274,13 +282,13 @@ namespace MediChain
                     int rowsAffected = cmd.ExecuteNonQuery();
                     if (rowsAffected > 0)
                     {
-                        Console.WriteLine("Product removed successfully. Rows affected: " + rowsAffected);
+                        System.Diagnostics.Debug.WriteLine("Product removed successfully. Rows affected: " + rowsAffected);
                         BindWarehouseData(dealerId);
                         ScriptManager.RegisterStartupScript(this, GetType(), "CloseModal", "closeModal();", true);
                     }
                     else
                     {
-                        Console.WriteLine("No product found to remove. Rows affected: " + rowsAffected);
+                        System.Diagnostics.Debug.WriteLine("No product found to remove. Rows affected: " + rowsAffected);
                     }
                 }
             }

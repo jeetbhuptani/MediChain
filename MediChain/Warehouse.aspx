@@ -220,6 +220,8 @@ Inherits="MediChain.WarehousePage" %>
         <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
             crossorigin="anonymous">
+        </script>
+        <script>
             function closeModal() {
                 var myModal = new bootstrap.Modal(document.getElementById('addUpdateModal'));
                 myModal.hide();
@@ -229,12 +231,13 @@ Inherits="MediChain.WarehousePage" %>
                 myModal.show();
             }
             function setDeleteModal(button) {
+                console.log(productName);
                 var productName = button.getAttribute('data-product-name');
                 document.getElementById('<%= hiddenProductId.ClientID %>').value = productName;
-                document.getElementById('deleteModalLabel').textContent = 'Remove ' + productName;
-                var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-                deleteModal.show();
-            }
+    document.getElementById('deleteModalLabel').textContent = 'Remove ' + productName;
+    var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    deleteModal.show();
+}
         </script>
     </body>
 </html>
