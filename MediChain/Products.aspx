@@ -73,7 +73,9 @@
                             <td><%# Eval("Product") %></td>
                             <td><%# String.Format("{0:C}", Eval("Pricing")) %></td>
                             <td style="width: 10%;">
-                                <input type="number" class="form-control" min="0" value="0" />
+                                <input type="number" class="form-control" min="0" value="0" 
+                                       max='<%# Eval("Quantity") %>' 
+                                       oninput="this.value = Math.min(this.value, this.max);" />
                             </td>
                             <td style="width: 10%;">
                                 <button class="btn btn-primary m-0 p-1 px-5" data-bs-toggle="modal" data-bs-target="#buyModal" type="button">Buy</button>

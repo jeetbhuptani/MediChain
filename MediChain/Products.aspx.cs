@@ -14,7 +14,14 @@ namespace MediChain
         {
             if (!IsPostBack)
             {
-                //LoadWarehouseData();
+                if (Session["Id"] != null)
+                {
+                    LoadWarehouseData();
+                }
+                else
+                {
+                    Response.Redirect("~/Login.aspx");
+                }
             }
         }
 
@@ -26,23 +33,54 @@ namespace MediChain
 
             //if (!string.IsNullOrEmpty(searchTerm))
             //{
-                //query += " WHERE Product LIKE @SearchTerm OR Dealer LIKE @SearchTerm";
+            //query += " WHERE Product LIKE @SearchTerm OR Dealer LIKE @SearchTerm";
             //}
 
             //using (SqlConnection con = new SqlConnection(connectionString))
             //{
-                //SqlCommand cmd = new SqlCommand(query, con);
+            //SqlCommand cmd = new SqlCommand(query, con);
 
-                //if (!string.IsNullOrEmpty(searchTerm))
-                //{
-                    //cmd.Parameters.AddWithValue("@SearchTerm", "%" + searchTerm + "%");
-                //}
-
-                //con.Open();
-                //rptProducts.DataSource = cmd.ExecuteReader();
-                //rptProducts.DataBind();
-                //con.Close();
+            //if (!string.IsNullOrEmpty(searchTerm))
+            //{
+            //cmd.Parameters.AddWithValue("@SearchTerm", "%" + searchTerm + "%");
             //}
+
+            //con.Open();
+            //rptProducts.DataSource = cmd.ExecuteReader();
+            //rptProducts.DataBind();
+            //con.Close();
+            //}
+            string buyerId = Session["Id"].ToString();
+
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                string query = @"
+                    SELECT 
+                        d.owner_name AS Dealer,
+                        p.name AS Product,
+                        mw.quantity AS Quantity,
+                        mw.custom_price AS Pricing
+                    FROM 
+                        Dealer d
+                    JOIN 
+                        Warehouse w ON d.id = w.dealer_id
+                    JOIN 
+                        MedicineWarehouse mw ON w.warehouse_id = mw.warehouse_id
+                    JOIN 
+                        Product p ON mw.product_id = p.product_id";
+
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    con.Open();
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    DataTable dt = new DataTable();
+                    dt.Load(reader);
+                    rptProducts.DataSource = dt;
+                    rptProducts.DataBind();
+                }
+            }
         }
 
         protected void btnSearch_Click(object sender, EventArgs e)
