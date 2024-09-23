@@ -33,7 +33,7 @@ namespace MediChain
                 string pharmacyAddress = "";
                 string companyName = "";
                 string companyAddress = "";
-
+                int warehouseId = 0;
 
                 using (SqlConnection con = new SqlConnection(connectionString))
                 {
@@ -68,24 +68,28 @@ namespace MediChain
                         {
                             cmd.Parameters.AddWithValue("@CompanyName", companyName);
                             cmd.Parameters.AddWithValue("@CompanyAddress", companyAddress);
+                            dealerId = Convert.ToInt32(cmd.ExecuteScalar());
                         }
                         else
                         {
                             cmd.Parameters.AddWithValue("@PharmacyName", pharmacyName);
                             cmd.Parameters.AddWithValue("@PharmacyAddress", pharmacyAddress);
-                        }
-
-                        int check = cmd.ExecuteNonQuery();
-                        if (check > 0)
-                        {
-                            Response.Redirect("~/Login.aspx");
-                        }
-                        else
-                        {
-                            lblMessage.Text = "An error occurred while registering.";
-                            lblMessage.ForeColor = System.Drawing.Color.Red;
+                            cmd.ExecuteNonQuery();
                         }
                     }
+                    if (tableName == "Dealer")
+                    {
+                        // Insert into Warehouse table
+                        warehouseId = GenerateUniqueWarehouseId(connectionString);
+                        string warehouseInsertQuery = "INSERT INTO Warehouse (warehouse_id, dealer_id) VALUES (@WarehouseId, @DealerId)";
+                        using (SqlCommand cmd = new SqlCommand(warehouseInsertQuery, con))
+                        {
+                            cmd.Parameters.AddWithValue("@WarehouseId", warehouseId);
+                            cmd.Parameters.AddWithValue("@DealerId", dealerId);
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                    Response.Redirect("~/Login.aspx");
                 }
             }
         }
