@@ -139,10 +139,11 @@ Inherits="MediChain.Products" %>
                                 <button type="button" class="btn btn-secondary"
                                     data-bs-dismiss="modal">Close</button>
                                 <!-- ASP.NET Button in Modal for Buy -->
-                                <asp:button ID="btnBuy"
+                                <asp:button ID="btnBuyModal"
                                     CssClass="btn btn-danger" runat="server"
-                                    Text="Buy" OnClick="btnBuy_Click"
+                                    Text="Buy" OnClick="btnBuy_Command"
                                     CausesValidation="False" />
+
                             </div>
                         </div>
                     </div>
@@ -161,12 +162,19 @@ Inherits="MediChain.Products" %>
                     
                     if (quantityInput) {
                         var quantity = quantityInput.value;
-
-                        // Get the current CommandArgument and append the quantity
                         var commandArgument = button.getAttribute('CommandArgument');
                         button.setAttribute('CommandArgument', commandArgument + ',' + quantity);
+
+                        // Update modal button's CommandArgument
+                        var modalButton = document.getElementById('<%= btnBuyModal.ClientID %>');
+                        modalButton.setAttribute('CommandArgument', commandArgument + ',' + quantity);
+
+                        // Show the modal
+                        var modal = new bootstrap.Modal(document.getElementById('buyModal'));
+                        modal.show();
                     }
                 }
+
             </script>
 
         </form>
