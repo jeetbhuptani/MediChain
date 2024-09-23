@@ -83,10 +83,9 @@ namespace MediChain
                     {
                         // Insert into Warehouse table
                         warehouseId = GenerateUniqueWarehouseId(connectionString);
-                        string warehouseInsertQuery = "INSERT INTO Warehouse (warehouse_id, dealer_id) VALUES (@WarehouseId, @DealerId)";
+                        string warehouseInsertQuery = "INSERT INTO Warehouse (dealer_id) VALUES (@DealerId)";
                         using (SqlCommand cmd = new SqlCommand(warehouseInsertQuery, con))
                         {
-                            cmd.Parameters.AddWithValue("@WarehouseId", warehouseId);
                             cmd.Parameters.AddWithValue("@DealerId", dealerId);
                             cmd.ExecuteNonQuery();
                         }
@@ -123,25 +122,26 @@ namespace MediChain
                 lblPharmacyAddress.Text = "Pharmacy Address";
             }
         }
-    }
-    private int GenerateUniqueWarehouseId(string connectionString)
-{
-    int newId;
-    using (SqlConnection con = new SqlConnection(connectionString))
-    {
-        con.Open();
-        do
+        private int GenerateUniqueWarehouseId(string connectionString)
         {
-            newId = new Random().Next(1, 1000);
-            string checkQuery = "SELECT COUNT(*) FROM Warehouse WHERE warehouse_id = @WarehouseId";
-            using (SqlCommand cmd = new SqlCommand(checkQuery, con))
+            int newId;
+            using (SqlConnection con = new SqlConnection(connectionString))
             {
-                cmd.Parameters.AddWithValue("@WarehouseId", newId);
-                int count = (int)cmd.ExecuteScalar();
-                if (count == 0) break; // Unique ID found
+                con.Open();
+                do
+                {
+                    newId = new Random().Next(1, 1000);
+                    string checkQuery = "SELECT COUNT(*) FROM Warehouse WHERE warehouse_id = @WarehouseId";
+                    using (SqlCommand cmd = new SqlCommand(checkQuery, con))
+                    {
+                        cmd.Parameters.AddWithValue("@WarehouseId", newId);
+                        int count = (int)cmd.ExecuteScalar();
+                        if (count == 0) break; // Unique ID found
+                    }
+                } while (true);
             }
-        } while (true);
+            return newId;
+        }
     }
-    return newId;
-}
+    
 }
