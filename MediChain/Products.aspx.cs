@@ -92,10 +92,82 @@ namespace MediChain
 
         protected void btnBuy_Click(object sender, EventArgs e)
         {
-            // Implement the logic to handle the Buy operation here.
-            // You can use ViewState or Session to get the selected product information.
-            // For example, you could store the product ID in a hidden field in the repeater,
-            // and then access it here to complete the purchase.
+            // Get the button that was clicked
+            Button btnBuy = (Button)sender;
+            RepeaterItem item = (RepeaterItem)btnBuy.NamingContainer;
+
+            // Retrieve product information from the repeater
+            string dealer = ((Label)item.FindControl("lblDealer")).Text;
+            string product = ((Label)item.FindControl("lblProduct")).Text;
+            decimal pricing = Convert.ToDecimal(((Label)item.FindControl("lblPricing")).Text);
+            int quantity = Convert.ToInt32(((TextBox)item.FindControl("txtQuantity")).Text);
+
+            string buyerId = Session["Id"].ToString();
+
+            SavePurchase(buyerId, dealer, product, pricing, quantity);
+
         }
+
+        private void SavePurchase(string buyerId, string dealer, string product, decimal pricing, int quantity)
+        {
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                // Get the dealer ID and product ID based on the dealer and product names
+                int dealerId = GetDealerId(dealer, con);
+                int productId = GetProductId(product, con);
+
+
+                // Calculate the amount
+                decimal amount = pricing * quantity;
+                DateTime orderDate = DateTime.Now;
+
+
+                string query = @"
+           INSERT INTO PurchaseOrder (dealer_id, buyer_id, amount, product_id, quantity, date, status)
+           VALUES (@DealerId, @BuyerId, @Amount, @ProductId, @Quantity, @OrderDate, @Status)";
+
+
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@DealerId", dealerId);
+                    cmd.Parameters.AddWithValue("@BuyerId", buyerId);
+                    cmd.Parameters.AddWithValue("@Amount", amount);
+                    cmd.Parameters.AddWithValue("@ProductId", productId);
+                    cmd.Parameters.AddWithValue("@Quantity", quantity);
+                    cmd.Parameters.AddWithValue("@OrderDate", orderDate);
+                    cmd.Parameters.AddWithValue("@Status", "pending");
+
+
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+        private int GetDealerId(string dealerName, SqlConnection con)
+        {
+            string query = "SELECT id FROM Dealer WHERE owner_name = @DealerName";
+            using (SqlCommand cmd = new SqlCommand(query, con))
+            {
+                cmd.Parameters.AddWithValue("@DealerName", dealerName);
+                return (int)cmd.ExecuteScalar();
+            }
+        }
+
+
+        private int GetProductId(string productName, SqlConnection con)
+        {
+            string query = "SELECT product_id FROM Product WHERE name = @ProductName";
+            using (SqlCommand cmd = new SqlCommand(query, con))
+            {
+                cmd.Parameters.AddWithValue("@ProductName", productName);
+                return (int)cmd.ExecuteScalar();
+            }
+        }
+
     }
 }
