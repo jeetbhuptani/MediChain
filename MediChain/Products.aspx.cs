@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Data;
 
 namespace MediChain
 {
@@ -58,7 +59,7 @@ namespace MediChain
             {
                 string query = @"
                     SELECT 
-                        d.owner_name AS Dealer,
+                        d.company_name AS Dealer,
                         p.name AS Product,
                         mw.quantity AS Quantity,
                         mw.custom_price AS Pricing

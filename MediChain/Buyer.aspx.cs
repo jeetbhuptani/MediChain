@@ -79,15 +79,5 @@ namespace MediChain
                 }
             }
         }
-
-        protected void btnSearch_Click(object sender, EventArgs e)
-        {
-            string searchTerm = txtSearch.Text.Trim();
-            if (!string.IsNullOrEmpty(searchTerm))
-            {
-                // Redirect to Products.aspx with search query string
-                //Response.Redirect($"Products.aspx?search={searchTerm}");
-            }
-        }
     }
 }

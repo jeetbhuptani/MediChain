@@ -49,13 +49,7 @@
             align-items: center; 
             justify-content: center;
         ">
-            <div class="container border border-5 py-3 position-relative top-0 left-50" style="width: 80%;">
-                <!-- Search Bar -->
-                <div class="d-flex border border-2 border-dark p-1 m-1" role="search">
-                    <asp:TextBox ID="txtSearch" CssClass="form-control me-2" runat="server" placeholder="Search Products"></asp:TextBox>
-                    <asp:Button ID="btnSearch" CssClass="btn btn-outline-warning me-2" runat="server" Text="Search" OnClick="btnSearch_Click" />
-                </div>
-                
+            <div class="container border border-5 py-3 position-relative top-0 left-50" style="width: 80%;">                
                 <!-- Purchase History -->
                 <div class="d-flex flex-column border border-2 border-dark p-1 m-1">
                     <p class="h5 text-center"><u>Purchase History</u></p>
