@@ -102,13 +102,12 @@ Inherits="MediChain.Products" %>
                                                 OnInput="this.value = Math.min(this.value, this.max);"></asp:textbox>
                                         </td>
                                         <td style="width: 10%;">
-                                            <asp:button ID="btnBuy"
-                                                runat="server"
-                                                CssClass="btn btn-primary m-0 p-1 px-5"
-                                                Text="Buy"
-                                                CommandArgument='<%# Eval("ProductID") + "," + Eval("DealerID") + "," + Eval("Pricing") %>'
-                                                OnClientClick="updateCommandArgument(this); return false;"
-                                                OnCommand="btnBuy_Command" CausesValidation="False" />
+                                            <button type="button"
+                                                class="btn btn-primary m-0 p-1 px-5"
+                                                data-command-argument='<%# Eval("ProductID") + "," + Eval("DealerID") + "," + Eval("Pricing") %>'
+                                                onclick="updateCommandArgument(this)">
+                                                Buy
+                                            </button>
                                         </td>
                                     </tr>
                                 </itemtemplate>
@@ -139,31 +138,35 @@ Inherits="MediChain.Products" %>
                                 <button type="button" class="btn btn-secondary"
                                     data-bs-dismiss="modal">Close</button>
                                 <!-- ASP.NET Button in Modal for Buy -->
-                                <asp:button ID="btnBuyModal" CssClass="btn btn-danger" runat="server" Text="Buy" OnCommand="btnBuy_Command" CausesValidation="False" />
-
+                                <asp:button ID="btnBuyModal"
+                                    CssClass="btn btn-danger" runat="server"
+                                    Text="Buy" OnCommand="btnBuy_Command"
+                                    CausesValidation="False" />
 
                             </div>
                         </div>
                     </div>
                 </div>
             </main>
-            <script >
+            <script>
                 function updateCommandArgument(button) {
-                    var row = button.closest('tr');
-                    var quantityInput = row.querySelector("[id$=txtQuantity]");
-        
-                    if (quantityInput) {
-                        var quantity = quantityInput.value;
-                        var commandArgument = button.getAttribute('CommandArgument');
-                        button.setAttribute('CommandArgument', commandArgument + ',' + quantity);
+                    function updateCommandArgument(button) {
+                        var row = button.closest('tr');
+                        var quantityInput = row.querySelector("[id$=txtQuantity]");
+                
+                        if (quantityInput) {
+                            var quantity = quantityInput.value;
+                            var commandArgument = button.getAttribute('data-command-argument');
+                            button.setAttribute('data-command-argument', commandArgument + ',' + quantity);
 
-                        // Update modal button's CommandArgument
-                        var modalButton = document.getElementById('<%= btnBuyModal.ClientID %>');
-                        modalButton.setAttribute('CommandArgument', commandArgument + ',' + quantity);
+                            // Update modal button's CommandArgument
+                            var modalButton = document.getElementById('<%= btnBuyModal.ClientID %>');
+                            modalButton.setAttribute('data-command-argument', commandArgument + ',' + quantity);
 
-                        // Show the modal
-                        var modal = new bootstrap.Modal(document.getElementById('buyModal'));
-                        modal.show();
+                            // Show the modal
+                            var modal = new bootstrap.Modal(document.getElementById('buyModal'));
+                            modal.show();
+                        }
                     }
                 }
             </script>
@@ -171,8 +174,6 @@ Inherits="MediChain.Products" %>
             <script
                 src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
                 crossorigin="anonymous"></script>
-
-            
 
         </form>
     </body>
