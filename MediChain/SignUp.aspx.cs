@@ -124,4 +124,24 @@ namespace MediChain
             }
         }
     }
+    private int GenerateUniqueWarehouseId(string connectionString)
+{
+    int newId;
+    using (SqlConnection con = new SqlConnection(connectionString))
+    {
+        con.Open();
+        do
+        {
+            newId = new Random().Next(1, 1000);
+            string checkQuery = "SELECT COUNT(*) FROM Warehouse WHERE warehouse_id = @WarehouseId";
+            using (SqlCommand cmd = new SqlCommand(checkQuery, con))
+            {
+                cmd.Parameters.AddWithValue("@WarehouseId", newId);
+                int count = (int)cmd.ExecuteScalar();
+                if (count == 0) break; // Unique ID found
+            }
+        } while (true);
+    }
+    return newId;
+}
 }
