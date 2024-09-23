@@ -11,7 +11,14 @@ namespace MediChain
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            if (!IsPostBack)
+            {
+                if (Session["Id"] != null)
+                {
+                    Session.Remove("Id");
+                }
+                Response.Redirect("~/Login.aspx");
+            }
         }
     }
 }
