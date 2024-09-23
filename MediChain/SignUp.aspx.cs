@@ -34,6 +34,7 @@ namespace MediChain
                 string companyName = "";
                 string companyAddress = "";
                 int warehouseId = 0;
+                int dealerId = 0;
 
                 using (SqlConnection con = new SqlConnection(connectionString))
                 {
@@ -53,7 +54,8 @@ namespace MediChain
                         companyName = txtPharmacyName.Text;
                         companyAddress = txtPharmacyAddress.Text;
                         insertQuery = "INSERT INTO Dealer (owner_name, company_name, company_address, mobile_no, email, password, joiningDate) " +
-                                      "VALUES (@Name, @CompanyName, @CompanyAddress, @MobileNumber, @Email, @Password, @JoiningDate)";
+                                      "VALUES (@Name, @CompanyName, @CompanyAddress, @MobileNumber, @Email, @Password, @JoiningDate); " +
+                                      "SELECT SCOPE_IDENTITY();";
                     }
 
                     using (SqlCommand cmd = new SqlCommand(insertQuery, con))
