@@ -82,7 +82,6 @@ namespace MediChain
             SavePurchase(buyerId, dealer, product, pricing, quantity);
         }
 
-
         private void SavePurchase(string buyerId, string dealer, string product, decimal pricing, int quantity)
         {
             string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;

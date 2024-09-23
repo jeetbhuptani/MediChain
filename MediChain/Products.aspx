@@ -108,7 +108,7 @@ Inherits="MediChain.Products" %>
                                                 Text="Buy"
                                                 CommandArgument='<%# Eval("ProductID") + "," + Eval("DealerID") + "," + Eval("Pricing") %>'
                                                 OnClientClick="updateCommandArgument(this); return false;"
-                                                OnCommand="btnBuy_Command" />
+                                                OnCommand="btnBuy_Command" CausesValidation="False" />
                                         </td>
                                     </tr>
                                 </itemtemplate>
@@ -139,27 +139,19 @@ Inherits="MediChain.Products" %>
                                 <button type="button" class="btn btn-secondary"
                                     data-bs-dismiss="modal">Close</button>
                                 <!-- ASP.NET Button in Modal for Buy -->
-                                <asp:button ID="btnBuyModal"
-                                    CssClass="btn btn-danger" runat="server"
-                                    Text="Buy" OnClick="btnBuy_Command"
-                                    CausesValidation="False" />
+                                <asp:button ID="btnBuyModal" CssClass="btn btn-danger" runat="server" Text="Buy" OnCommand="btnBuy_Command" CausesValidation="False" />
+
 
                             </div>
                         </div>
                     </div>
                 </div>
             </main>
-
-            <!-- Bootstrap JS -->
-            <script
-                src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-                crossorigin="anonymous"></script>
-
-            <script type="text/javascript">
+            <script >
                 function updateCommandArgument(button) {
                     var row = button.closest('tr');
                     var quantityInput = row.querySelector("[id$=txtQuantity]");
-                    
+        
                     if (quantityInput) {
                         var quantity = quantityInput.value;
                         var commandArgument = button.getAttribute('CommandArgument');
@@ -174,8 +166,13 @@ Inherits="MediChain.Products" %>
                         modal.show();
                     }
                 }
-
             </script>
+            <!-- Bootstrap JS -->
+            <script
+                src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+                crossorigin="anonymous"></script>
+
+            
 
         </form>
     </body>
