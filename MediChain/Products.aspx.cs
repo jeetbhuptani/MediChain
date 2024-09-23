@@ -28,29 +28,6 @@ namespace MediChain
 
         protected void LoadWarehouseData(string searchTerm = "")
         {
-            // Replace with your actual database connection string
-            //string connectionString = "YourConnectionStringHere";
-            //string query = "SELECT Dealer, Product, Pricing FROM Warehouse";
-
-            //if (!string.IsNullOrEmpty(searchTerm))
-            //{
-            //query += " WHERE Product LIKE @SearchTerm OR Dealer LIKE @SearchTerm";
-            //}
-
-            //using (SqlConnection con = new SqlConnection(connectionString))
-            //{
-            //SqlCommand cmd = new SqlCommand(query, con);
-
-            //if (!string.IsNullOrEmpty(searchTerm))
-            //{
-            //cmd.Parameters.AddWithValue("@SearchTerm", "%" + searchTerm + "%");
-            //}
-
-            //con.Open();
-            //rptProducts.DataSource = cmd.ExecuteReader();
-            //rptProducts.DataBind();
-            //con.Close();
-            //}
             string buyerId = Session["Id"].ToString();
 
             string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
@@ -90,23 +67,21 @@ namespace MediChain
             //LoadWarehouseData(searchTerm);
         }
 
-        protected void btnBuy_Click(object sender, EventArgs e)
+        protected void btnBuy_Command(object sender, CommandEventArgs e)
         {
-            // Get the button that was clicked
-            Button btnBuy = (Button)sender;
-            RepeaterItem item = (RepeaterItem)btnBuy.NamingContainer;
+            string[] commandArgs = e.CommandArgument.ToString().Split(',');
 
-            // Retrieve product information from the repeater
-            string dealer = ((Label)item.FindControl("lblDealer")).Text;
-            string product = ((Label)item.FindControl("lblProduct")).Text;
-            decimal pricing = Convert.ToDecimal(((Label)item.FindControl("lblPricing")).Text);
-            int quantity = Convert.ToInt32(((TextBox)item.FindControl("txtQuantity")).Text);
+            string product = commandArgs[0];  // ProductID
+            string dealer = commandArgs[1];   // DealerID
+            decimal pricing = Convert.ToDecimal(commandArgs[2]); // Pricing
+            int quantity = Convert.ToInt32(commandArgs[3]); // Inputted Quantity
 
             string buyerId = Session["Id"].ToString();
 
+            // Save the purchase details
             SavePurchase(buyerId, dealer, product, pricing, quantity);
-
         }
+
 
         private void SavePurchase(string buyerId, string dealer, string product, decimal pricing, int quantity)
         {
