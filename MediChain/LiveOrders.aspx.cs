@@ -97,9 +97,16 @@ namespace MediChain
         protected void btnDone_Click(object sender, EventArgs e)
         {
             string purchaseId = (sender as Button).CommandArgument;
-            
             string query = "UPDATE PurchaseOrder SET status = 'done' WHERE purchase_id = @purchaseId";
+            /*string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+            string query1 = "Select quantity from PurchaseOrder where purchase_id = @purchaseId";
+            using(SqlConnection con = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand(query1, con);
+                con.Open();
+                object temp = cmd.ExecuteScalar();
 
+            }*/
             UpdateOrderStatus(purchaseId, query);
 
             BindLiveOrders(Session["Id"].ToString());

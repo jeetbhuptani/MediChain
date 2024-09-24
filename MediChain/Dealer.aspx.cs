@@ -106,7 +106,7 @@ namespace MediChain
             {
                 con.Open();
 
-                string query = "SELECT COUNT(purchase_id) AS PurchaseCount FROM PurchaseOrder WHERE dealer_id = @DealerId";
+                string query = "SELECT COUNT(purchase_id) AS PurchaseCount FROM PurchaseOrder WHERE dealer_id = @DealerId and status='pending'";
 
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {

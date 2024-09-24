@@ -56,14 +56,8 @@ Inherits="MediChain.Products" %>
                 <div class="p-2 bg-dark">
                     <!-- Search bar using ASP.NET TextBox and Button -->
                     <div class="d-flex" role="search">
-                        <asp:textbox ID="txtSearch" CssClass="form-control me-2"
-                            runat="server"
-                            placeholder="Search Products"></asp:textbox>
-                        <asp:button ID="btnSearch"
-                            CssClass="btn btn-outline-warning me-2"
-                            runat="server" Text="Search"
-                            OnClick="btnSearch_Click"
-                            CausesValidation="False" />
+                        <asp:Label ID="lblMessage" CssClass="form-control me-2"
+                            runat="server"></asp:Label>
                     </div>
                 </div>
 
@@ -87,7 +81,7 @@ Inherits="MediChain.Products" %>
 
                                 <itemtemplate>
                                     <tr>
-                                        <th scope="row"><%# Container.ItemIndex
+                                        <th scope="row" id="rowid"><%# Container.ItemIndex
                                             + 1 %></th>
                                         <td><%# Eval("Dealer") %></td>
                                         <td><%# Eval("Product") %></td>
@@ -103,8 +97,9 @@ Inherits="MediChain.Products" %>
                                         </td>
                                         <td style="width: 10%;">
                                             <button type="button"
-                                                class="btn btn-primary m-0 p-1 px-5"
-                                                data-command-argument='<%# Eval("ProductID") + "," + Eval("DealerID") + "," + Eval("Pricing") %>'
+                                                class="btn btn-primary m-0 p-1 px-5" data-bs-toggle="modal" data-bs-target="#buyModal"
+                                                data-command-argument='<%# Eval("Product") + "," + Eval("Dealer") + "," + Eval("Pricing") %>'
+                                                data-command-index = '<%#  (Container.ItemIndex).ToString() %>'
                                                 onclick="updateCommandArgument(this)">
                                                 Buy
                                             </button>
@@ -138,10 +133,11 @@ Inherits="MediChain.Products" %>
                                 <button type="button" class="btn btn-secondary"
                                     data-bs-dismiss="modal">Close</button>
                                 <!-- ASP.NET Button in Modal for Buy -->
+                                <asp:hiddenfield ID="hiddenProductId" runat="server" />
                                 <asp:button ID="btnBuyModal"
                                     CssClass="btn btn-danger" runat="server"
                                     Text="Buy" OnCommand="btnBuy_Command"
-                                    CausesValidation="False" />
+                                    CausesValidation="False" CommandArgument=""/>
 
                             </div>
                         </div>
@@ -150,23 +146,31 @@ Inherits="MediChain.Products" %>
             </main>
             <script>
                 function updateCommandArgument(button) {
-                    function updateCommandArgument(button) {
-                        var row = button.closest('tr');
-                        var quantityInput = row.querySelector("[id$=txtQuantity]");
-                
-                        if (quantityInput) {
-                            var quantity = quantityInput.value;
-                            var commandArgument = button.getAttribute('data-command-argument');
-                            button.setAttribute('data-command-argument', commandArgument + ',' + quantity);
+                    var row = button.closest('tr');
+                    console.log(row);
+                    
+                    var rid = button.getAttribute('data-command-index');
+                    console.log(rid);
+                    var s = "[id$=rptProducts_txtQuantity_" + rid + "]";
+                    console.log(s);
+                    var quantityInput = row.querySelector(s);
+                    console.log(quantityInput);
 
-                            // Update modal button's CommandArgument
-                            var modalButton = document.getElementById('<%= btnBuyModal.ClientID %>');
-                            modalButton.setAttribute('data-command-argument', commandArgument + ',' + quantity);
+                    if (quantityInput) {
+                        var quantity = quantityInput.value;
+                        var commandArgument = button.getAttribute('data-command-argument');
+                        button.setAttribute('data-command-argument', commandArgument + ',' + quantity);
+                        // Update modal button's CommandArgument
+                        console.log("Hello");
+                        console.log(commandArgument);
+                        document.getElementById('<%= hiddenProductId.ClientID %>').value = commandArgument + ',' + quantity ;
+                        //var modalButton = document.getElementById('<%= btnBuyModal.ClientID %>');
+                        //modalButton.setAttribute('<%= btnBuyModal.CommandArgument%>', commandArgument + ',' + quantity);
+                        //console.log(modalButton);
+                        // Show the modal
 
-                            // Show the modal
-                            var modal = new bootstrap.Modal(document.getElementById('buyModal'));
-                            modal.show();
-                        }
+                        var modal = new bootstrap.Modal(document.getElementById('buyModal'));
+                        modal.show();
                     }
                 }
             </script>
